@@ -1,45 +1,76 @@
 const gameBoard = (function () {
   let boardSquares = [null, null, null, null, null, null, null, null, null];
-  const UI = () => {
+  const renderMovement = () => {
     const nodesTableCell = document.querySelectorAll("td");
     for (let index = 0; index < nodesTableCell.length; index++) {
       nodesTableCell[index].textContent = boardSquares[index];
     }
     nodesTableCell.forEach((element) => {
-      element.addEventListener("click", (e) => {
-        occupyBoard(element.id, "X");
+      element.addEventListener("click", () => {
+        occupyBoard(element.id, player1.symbol);
       });
     });
   };
   const resetGameBoard = () => {
     boardSquares = [null, null, null, null, null, null, null, null, null];
-    UI();
+    renderMovement();
     return { boardSquares };
   };
   const occupyBoard = (index, symbol) => {
     if (symbol.toUpperCase() === "X" || symbol.toUpperCase() === "O") {
       boardSquares[index] = symbol.toUpperCase();
-      UI();
+      renderMovement();
       return boardSquares;
     }
     return "Please select correct symbol!";
   };
 
-  return { resetGameBoard, occupyBoard, boardSquares };
+  return { resetGameBoard, occupyBoard };
 })();
-const playerFactory = (name) => {
+const playerFactory = (name, symbol) => {
   let wins = 0;
   let losses = 0;
   const win = () => wins++;
   const lose = () => losses--;
   const getWins = () => wins;
   const getLosses = () => losses;
-  return { name, win, lose, getWins, getLosses };
+  return { name, symbol, win, lose, getWins, getLosses };
 };
-const gameLogic = (function () {
+
+gameBoard.resetGameBoard();
+const enemyAI = playerFactory("computer", "O");
+const player1 = playerFactory("randomDude", "X");
+
+// Symbol selection
+(function () {
+  const symbolButton = document.querySelector(".symbol");
+  if (
+    !(
+      gameBoard.boardSquares.includes("X") ||
+      gameBoard.boardSquares.includes("O")
+    )
+  ) {
+  }
+  symbolButton.innerHTML = player1.symbol;
+  symbolButton.addEventListener("click", () => {
+    console.log(player1.symbol);
+    if (player1.symbol === "X") {
+      player1.symbol = "O";
+      enemyAI.symbol = "X";
+    } else {
+      player1.symbol = "X";
+      enemyAI.symbol = "O";
+    }
+    symbolButton.innerHTML = player1.symbol;
+  });
+
   return {};
 })();
-const dominik = playerFactory("Dominik");
+
+// Game Logic
+(function () {
+  // if ate least 1 cell is occupied player can no longer change symbol!
+})();
 
 /*
 gameboard is represented as array with 9 indexes.

@@ -139,7 +139,24 @@ q:after {
 }
 
 .container>div {
-	height: 30%;
+	height: 15%;
+}
+
+.symbol-selection {
+	display: flex;
+	justify-content: space-evenly;
+	width: 15%;
+}
+
+.symbol-selection>div,
+button {
+	height: 80px;
+	width: 80px;
+	display: flex;
+	border: 4px solid black;
+	justify-content: center;
+	align-items: center;
+	font-size: 2rem;
 }
 
 table {
