@@ -45,25 +45,89 @@ const logic = (function () {
     gameBoard.print().forEach((element) => {
       count[element] = (count[element] || 0) + 1;
     });
-    if (count.null === 9 || count.null % 2 === 1) {
+    if (count[""] === 9 || count[""] % 2 === 1) {
       return playerWithXsymbol;
     }
     return playerWithOsymbol;
   }
 
-  // 3 same symbols in a row equals win
-  function checkRow() {
-    for (let index = 0; index < 9; index += 1) {
-      const cell = gameBoard.readCell;
-      if (!cell(index).isEmpty()) {
-        return cell(index) === cell(index + 1);
+  function checkForWinner() {
+    // 3 same symbols in a row equals win
+    const cell = gameBoard.readCell;
+    function checkRow() {
+      for (let index = 0; index < 9; index += 1) {
+        if (index === 0 || index === 3 || index === 6) {
+          if (!cell(index).isEmpty) {
+            if (
+              cell(index) === cell(index + 1) &&
+              cell(index) === cell(index + 2)
+            ) {
+              return {
+                symbol: gameBoard.readCell(index),
+                indexes: [index, index + 1, index + 2],
+              };
+            }
+          }
+        }
       }
     }
+    // 3 same symbols in a colum equals win
+    function checkColumn() {
+      for (let index = 0; index < 3; index += 1) {
+        if (!cell(index).isEmpty) {
+          if (
+            cell(index) === cell(index + 3) &&
+            cell(index) === cell(index + 6)
+          ) {
+            return {
+              symbol: gameBoard.readCell(index),
+              indexes: [index, index + 3, index + 6],
+            };
+          }
+        }
+      }
+    }
+    // 3 same symbols diagonaly equals win
+    function checkDiagonal() {
+      for (let index = 0; index < 9; index += 1) {
+        if (index === 0) {
+          if (!cell(index).isEmpty) {
+            if (
+              cell(index) === cell(index + 4) &&
+              cell(index) === cell(index + 8)
+            ) {
+              return {
+                symbol: gameBoard.readCell(index),
+                indexes: [index, index + 4, index + 8],
+              };
+            }
+          }
+        } else if (index === 2) {
+          if (!cell(index).isEmpty) {
+            if (
+              cell(index) === cell(index + 2) &&
+              cell(index) === cell(index + 4)
+            ) {
+              return {
+                symbol: gameBoard.readCell(index),
+                indexes: [index, index + 2, index + 4],
+              };
+            }
+          }
+        }
+      }
+    }
+    return checkRow() || checkColumn() || checkDiagonal();
   }
-  // 3 same symbols in a colum equals win
-  // 3 same symbols diagonaly equals win
-  return { nextMoveBelongsTo, checkRow };
+  return {
+    nextMoveBelongsTo,
+    checkForWinner,
+  };
 })();
-gameBoard.occupy(0, "x");
-gameBoard.occupy(1, "x");
-gameBoard.occupy(2, "x");
+gameBoard.occupy(0, "o");
+gameBoard.occupy(3, "o");
+gameBoard.occupy(4, "x");
+
+gameBoard.occupy(6, "x");
+gameBoard.occupy(7, "o");
+gameBoard.occupy(8, "o");
