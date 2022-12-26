@@ -55,9 +55,9 @@ const logic = (function () {
     // 3 same symbols in a row equals win
     const cell = gameBoard.readCell;
     function checkRow() {
-      for (let index = 0; index < 9; index += 1) {
+      for (let index = 0; index < 7; index += 1) {
         if (index === 0 || index === 3 || index === 6) {
-          if (!cell(index).isEmpty) {
+          if (cell(index) !== "") {
             if (
               cell(index) === cell(index + 1) &&
               cell(index) === cell(index + 2)
@@ -74,7 +74,7 @@ const logic = (function () {
     // 3 same symbols in a colum equals win
     function checkColumn() {
       for (let index = 0; index < 3; index += 1) {
-        if (!cell(index).isEmpty) {
+        if (cell(index) !== "") {
           if (
             cell(index) === cell(index + 3) &&
             cell(index) === cell(index + 6)
@@ -91,7 +91,7 @@ const logic = (function () {
     function checkDiagonal() {
       for (let index = 0; index < 9; index += 1) {
         if (index === 0) {
-          if (!cell(index).isEmpty) {
+          if (cell(index) !== "") {
             if (
               cell(index) === cell(index + 4) &&
               cell(index) === cell(index + 8)
@@ -103,7 +103,7 @@ const logic = (function () {
             }
           }
         } else if (index === 2) {
-          if (!cell(index).isEmpty) {
+          if (cell(index) !== "") {
             if (
               cell(index) === cell(index + 2) &&
               cell(index) === cell(index + 4)
@@ -119,15 +119,41 @@ const logic = (function () {
     }
     return checkRow() || checkColumn() || checkDiagonal();
   }
+  function colorWinningCells() {
+    const cells = document.querySelectorAll("td");
+    logic.checkForWinner().indexes.forEach((square) => {
+      console.log(square);
+      cells.forEach((element2) => {
+        if (parseInt(element2.id, 10) === square) {
+          element2.classList.add("winner");
+        }
+      });
+    });
+  }
   return {
     nextMoveBelongsTo,
     checkForWinner,
+    colorWinningCells,
   };
 })();
-gameBoard.occupy(0, "o");
-gameBoard.occupy(3, "o");
-gameBoard.occupy(4, "x");
+// game ui
+(function () {
+  const cells = document.querySelectorAll("td");
+  cells.forEach((element) => {
+    element.addEventListener("click", () => {
+      const nextSymbol = logic.nextMoveBelongsTo().symbol;
+      gameBoard.occupy(element.id, nextSymbol);
+      element.textContent = nextSymbol;
+      if (logic.checkForWinner()) {
+        logic.colorWinningCells();
+      }
+    });
+  });
+})();
+// gameBoard.occupy(0, "o");
+// gameBoard.occupy(3, "o");
+// gameBoard.occupy(4, "x");
 
-gameBoard.occupy(6, "x");
-gameBoard.occupy(7, "o");
-gameBoard.occupy(8, "o");
+// gameBoard.occupy(6, "x");
+// gameBoard.occupy(7, "o");
+// gameBoard.occupy(8, "o");

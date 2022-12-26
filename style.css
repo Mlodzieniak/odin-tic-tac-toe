@@ -194,3 +194,7 @@ td:active {
 	background-color: black;
 	color: white;
 }
+
+.winner {
+	background-color: rgb(200, 0, 0);
+}
