@@ -1,5 +1,7 @@
 const gameBoard = (function () {
-  const cells = Array(9).fill("");
+  // eslint-disable-next-line prefer-const
+  let cells = Array(9).fill("");
+  Object.seal(cells);
   function reset() {
     cells.fill("");
   }
@@ -11,12 +13,21 @@ const gameBoard = (function () {
   }
   function occupy(index, symbol) {
     if (symbol.toLowerCase() === "x" || symbol.toLowerCase() === "o") {
-      if (cells[index] === "") {
+      if (cells[index] === "" && !Object.isFrozen(cells)) {
         cells[index] = symbol.toLowerCase();
+        return true;
       }
     }
   }
-  return { reset, print, readCell, occupy };
+  function freeze() {
+    cells.fill("");
+    Object.freeze(cells);
+  }
+  function unFreeze() {
+    cells = [...cells];
+    Object.seal(cells);
+  }
+  return { reset, print, readCell, occupy, freeze, unFreeze };
 })();
 
 const playerFactory = (name, symbol) => {
@@ -122,7 +133,6 @@ const logic = (function () {
   function colorWinningCells() {
     const cells = document.querySelectorAll("td");
     logic.checkForWinner().indexes.forEach((square) => {
-      console.log(square);
       cells.forEach((element2) => {
         if (parseInt(element2.id, 10) === square) {
           element2.classList.add("winner");
@@ -130,22 +140,36 @@ const logic = (function () {
       });
     });
   }
+
   return {
     nextMoveBelongsTo,
     checkForWinner,
     colorWinningCells,
   };
 })();
-// game ui
+// game DOM
 (function () {
   const cells = document.querySelectorAll("td");
+  const nextGameBTN = document.querySelector(".next-game");
+  function startNewGame() {
+    nextGameBTN.setAttribute("disabled", "");
+    gameBoard.unFreeze();
+    cells.forEach((element) => {
+      element.textContent = "";
+      element.classList.remove("winner");
+    });
+  }
+  nextGameBTN.addEventListener("click", () => startNewGame());
   cells.forEach((element) => {
     element.addEventListener("click", () => {
       const nextSymbol = logic.nextMoveBelongsTo().symbol;
-      gameBoard.occupy(element.id, nextSymbol);
-      element.textContent = nextSymbol;
+      if (gameBoard.occupy(element.id, nextSymbol)) {
+        element.textContent = nextSymbol;
+      }
       if (logic.checkForWinner()) {
         logic.colorWinningCells();
+        gameBoard.freeze();
+        nextGameBTN.removeAttribute("disabled");
       }
     });
   });
