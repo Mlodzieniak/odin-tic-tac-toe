@@ -205,10 +205,3 @@ const logic = (function () {
     });
   });
 })();
-// gameBoard.occupy(0, "o");
-// gameBoard.occupy(3, "o");
-// gameBoard.occupy(4, "x");
-
-// gameBoard.occupy(6, "x");
-// gameBoard.occupy(7, "o");
-// gameBoard.occupy(8, "o");

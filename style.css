@@ -196,13 +196,25 @@ td:active {
 	color: white;
 }
 
-.finish {
+.finishBTN,
+.startBTN {
 	width: auto;
 }
 
 .player {
 	display: flex;
 	gap: 0.5rem;
+}
+
+.starter-popup {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	border: 4px solid red;
+	padding: 1rem;
+
 }
 
 .winner {

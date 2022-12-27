@@ -41,12 +41,43 @@
 
         </table>
         <div>
-            <button type="button" class="finish" disabled>Finish!</button>
+            <button type="button" class="finishBTN" disabled>Finish!</button>
         </div>
         <div class="scores">
-            <div id="player1" class="player"><p class="symbol">X</p><p class="player-name">Player 1:</p><p class="player-score">0</p><p class="point-or-points"> points</p></div>
-            <div id="player2" class="player"><p class="symbol">O</p><p class="player-name">Player 2:</p><p class="player-score">0</p><p class="point-or-points"> points</p></div>
+            <div id="player1" class="player">
+                <p class="symbol">X</p>
+                <p class="player-name">Player 1:</p>
+                <p class="player-score">0</p>
+                <p class="point-or-points"> points</p>
+            </div>
+            <div id="player2" class="player">
+                <p class="symbol">O</p>
+                <p class="player-name">Player 2:</p>
+                <p class="player-score">0</p>
+                <p class="point-or-points"> points</p>
+            </div>
         </div>
+    </div>
+    <div class="starter-popup">
+        <div class="starter-header">
+
+        </div>
+        <div class="starter-body">
+            <div>Select game mode:</div>
+            <label for="gamemode">PvP</label>
+            <input type="radio" name="gamemode" value="pvp" checked>
+            <label for="gamemode">RandomAI</label>
+            <input type="radio" name="gamemode" value="randomai">
+            <label for="gamemode">Dominator</label>
+            <input type="radio" name="gamemode" value="dominator">
+            <div class="names">
+                <p>Type name(s):</p>
+                <input type="text" id="player1-setname" value="player1">
+            </div>
+            <input type="text" id="player2-setname" value="player2" disabled>
+            <button type="button" class="startBTN">Start game</button>
+        </div>
+    </div>
     </div>
 </body>
 
