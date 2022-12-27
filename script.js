@@ -32,17 +32,13 @@ const gameBoard = (function () {
 
 const playerFactory = (name, symbol) => {
   let wins = 0;
-  let losses = 0;
   function win() {
     wins += 1;
   }
-  function lose() {
-    losses += 1;
+  function getWins() {
+    return `${wins}`;
   }
-  function printRecord() {
-    return `${name} has won ${wins} and lost ${losses} games`;
-  }
-  return { win, lose, printRecord, name, symbol };
+  return { win, getWins, name, symbol };
 };
 const players = [playerFactory("player", "x"), playerFactory("enemy", "o")];
 
@@ -130,26 +126,40 @@ const logic = (function () {
     }
     return checkRow() || checkColumn() || checkDiagonal();
   }
+  function addPointForWinningPlayer() {
+    if (checkForWinner()) {
+      if (checkForWinner().symbol === "x") {
+        playerWithXsymbol.win();
+      }
+      if (checkForWinner().symbol === "o") {
+        playerWithOsymbol.win();
+      }
+    }
+  }
   function checkForTie() {
     if (!gameBoard.print().includes("") && !checkForWinner()) {
-      console.log("TIE");
+      console.log("tie");
+      return true;
     }
   }
 
   function colorWinningCells() {
     const cells = document.querySelectorAll("td");
-    logic.checkForWinner().indexes.forEach((square) => {
-      cells.forEach((element2) => {
-        if (parseInt(element2.id, 10) === square) {
-          element2.classList.add("winner");
-        }
+    if (logic.checkForWinner()) {
+      logic.checkForWinner().indexes.forEach((square) => {
+        cells.forEach((element2) => {
+          if (parseInt(element2.id, 10) === square) {
+            element2.classList.add("winner");
+          }
+        });
       });
-    });
+    }
   }
 
   return {
     nextMoveBelongsTo,
     checkForWinner,
+    addPointForWinningPlayer,
     checkForTie,
     colorWinningCells,
   };
@@ -157,7 +167,19 @@ const logic = (function () {
 // game DOM
 (function () {
   const cells = document.querySelectorAll("td");
-  const nextGameBTN = document.querySelector(".next-game");
+  const nextGameBTN = document.querySelector(".finish");
+  const player1 = document.querySelector("#player1");
+  const player2 = document.querySelector("#player2");
+  const player = document.querySelector(".player");
+  function updatePlayersScore() {
+    player1.querySelector(".player-score").textContent = players[0].getWins();
+    player2.querySelector(".player-score").textContent = players[1].getWins();
+    if (player.querySelector(".player-score").textContent === "1") {
+      player.querySelector(".point-or-points").textContent = "point";
+    } else {
+      player.querySelector(".point-or-points").textContent = "points";
+    }
+  }
   function startNewGame() {
     nextGameBTN.setAttribute("disabled", "");
     gameBoard.unFreeze();
@@ -172,12 +194,13 @@ const logic = (function () {
       const nextSymbol = logic.nextMoveBelongsTo().symbol;
       if (gameBoard.occupy(element.id, nextSymbol)) {
         element.textContent = nextSymbol;
-        logic.checkForTie();
       }
-      if (logic.checkForWinner()) {
+      if (logic.checkForWinner() || logic.checkForTie()) {
         logic.colorWinningCells();
+        logic.addPointForWinningPlayer();
         gameBoard.freeze();
         nextGameBTN.removeAttribute("disabled");
+        updatePlayersScore();
       }
     });
   });

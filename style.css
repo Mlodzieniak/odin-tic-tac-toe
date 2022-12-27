@@ -136,6 +136,7 @@ q:after {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	gap: 1.5rem;
 }
 
 .container>div {
@@ -193,6 +194,15 @@ td:hover {
 td:active {
 	background-color: black;
 	color: white;
+}
+
+.finish {
+	width: auto;
+}
+
+.player {
+	display: flex;
+	gap: 0.5rem;
 }
 
 .winner {
