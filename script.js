@@ -167,10 +167,13 @@ const logic = (function () {
 // game DOM
 (function () {
   const cells = document.querySelectorAll("td");
-  const nextGameBTN = document.querySelector(".finish");
+  const nextGameBTN = document.querySelector(".finishBTN");
   const player1 = document.querySelector("#player1");
   const player2 = document.querySelector("#player2");
   const player = document.querySelector(".player");
+  const openPopupBTN = document.querySelectorAll("[data-popup-target]");
+  const closePopupBTN = document.querySelectorAll("[data-startgame-button]");
+  const overlay = document.getElementById("overlay");
   function updatePlayersScore() {
     player1.querySelector(".player-score").textContent = players[0].getWins();
     player2.querySelector(".player-score").textContent = players[1].getWins();
@@ -204,4 +207,26 @@ const logic = (function () {
       }
     });
   });
+  openPopupBTN.forEach((button) => {
+    button.addEventListener("click", () => {
+      const popup = document.querySelector(button.dataset.popupTarget);
+      openPopup(popup);
+    });
+  });
+  closePopupBTN.forEach((button) => {
+    button.addEventListener("click", () => {
+      const popup = button.closest(".popup");
+      closePopup(popup);
+    });
+  });
+  function openPopup(popup) {
+    if (popup == null) return;
+    popup.classList.add("active");
+    overlay.classList.add("active");
+  }
+  function closePopup(popup) {
+    if (popup == null) return;
+    popup.classList.remove("active");
+    overlay.classList.remove("active");
+  }
 })();

@@ -42,6 +42,7 @@
         </table>
         <div>
             <button type="button" class="finishBTN" disabled>Finish!</button>
+            <button type="button" class="popupBTN" data-popup-target="#popup">Settings</button>
         </div>
         <div class="scores">
             <div id="player1" class="player">
@@ -58,27 +59,25 @@
             </div>
         </div>
     </div>
-    <div class="starter-popup">
-        <div class="starter-header">
-
-        </div>
-        <div class="starter-body">
-            <div>Select game mode:</div>
+    <div class="popup" id="popup">
+        <fieldset>
+            <legend>Select game mode:</legend>
             <label for="gamemode">PvP</label>
             <input type="radio" name="gamemode" value="pvp" checked>
             <label for="gamemode">RandomAI</label>
             <input type="radio" name="gamemode" value="randomai">
             <label for="gamemode">Dominator</label>
             <input type="radio" name="gamemode" value="dominator">
-            <div class="names">
-                <p>Type name(s):</p>
-                <input type="text" id="player1-setname" value="player1">
-            </div>
+        </fieldset>
+        <div class="names">
+            <p>Type name(s):</p>
+            <input type="text" id="player1-setname" value="player1">
             <input type="text" id="player2-setname" value="player2" disabled>
-            <button type="button" class="startBTN">Start game</button>
         </div>
+        <button type="button" class="startBTN" data-startgame-button>Start game</button>
     </div>
-    </div>
+    <div id="overlay"></div>
+
 </body>
 
 </html>
