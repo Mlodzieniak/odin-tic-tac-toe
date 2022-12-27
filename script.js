@@ -130,6 +130,12 @@ const logic = (function () {
     }
     return checkRow() || checkColumn() || checkDiagonal();
   }
+  function checkForTie() {
+    if (!gameBoard.print().includes("") && !checkForWinner()) {
+      console.log("TIE");
+    }
+  }
+
   function colorWinningCells() {
     const cells = document.querySelectorAll("td");
     logic.checkForWinner().indexes.forEach((square) => {
@@ -144,6 +150,7 @@ const logic = (function () {
   return {
     nextMoveBelongsTo,
     checkForWinner,
+    checkForTie,
     colorWinningCells,
   };
 })();
@@ -165,6 +172,7 @@ const logic = (function () {
       const nextSymbol = logic.nextMoveBelongsTo().symbol;
       if (gameBoard.occupy(element.id, nextSymbol)) {
         element.textContent = nextSymbol;
+        logic.checkForTie();
       }
       if (logic.checkForWinner()) {
         logic.colorWinningCells();
