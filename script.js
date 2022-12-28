@@ -38,7 +38,10 @@ const playerFactory = (name, symbol) => {
   function getWins() {
     return `${wins}`;
   }
-  return { win, getWins, name, symbol };
+  function resetWins() {
+    wins = 0;
+  }
+  return { win, getWins, resetWins, name, symbol };
 };
 const players = [playerFactory("player", "x"), playerFactory("enemy", "o")];
 
@@ -164,7 +167,7 @@ const logic = (function () {
     colorWinningCells,
   };
 })();
-// game DOM
+// DOM
 (function () {
   const cells = document.querySelectorAll("td");
   const nextGameBTN = document.querySelector(".finishBTN");
@@ -174,6 +177,11 @@ const logic = (function () {
   const openPopupBTN = document.querySelectorAll("[data-popup-target]");
   const closePopupBTN = document.querySelectorAll("[data-startgame-button]");
   const overlay = document.getElementById("overlay");
+  const gameModeRadioBTN = document.querySelectorAll("input[name='gamemode']");
+  const player1SetName = document.getElementById("player1-setname");
+  const player2SetName = document.getElementById("player2-setname");
+
+  // Functions
   function updatePlayersScore() {
     player1.querySelector(".player-score").textContent = players[0].getWins();
     player2.querySelector(".player-score").textContent = players[1].getWins();
@@ -191,6 +199,38 @@ const logic = (function () {
       element.classList.remove("winner");
     });
   }
+  function openPopup(popup) {
+    if (popup == null) return;
+    popup.classList.add("active");
+    overlay.classList.add("active");
+  }
+  function closePopup(popup) {
+    if (popup == null) return;
+    popup.classList.remove("active");
+    overlay.classList.remove("active");
+    player1.querySelector(".player-name").textContent = player1SetName.value;
+    player2.querySelector(".player-name").textContent = player2SetName.value;
+  }
+  function resetScoreBoard() {
+    players.forEach((playerToReset) => {
+      playerToReset.resetWins();
+    });
+  }
+  function selectedGameMode(button) {
+    if (button.value === "pvp") {
+      player2SetName.removeAttribute("disabled");
+      player2SetName.value = "Player 2";
+    } else if (button.value === "randomai") {
+      player2SetName.setAttribute("disabled", "");
+      player2SetName.value = "Dumb AI";
+    } else if (button.value === "dominator") {
+      player2SetName.setAttribute("disabled", "");
+      player2SetName.value = "Dominator AI";
+    }
+    resetScoreBoard();
+    updatePlayersScore();
+  }
+  // Eventlisteners
   nextGameBTN.addEventListener("click", () => startNewGame());
   cells.forEach((element) => {
     element.addEventListener("click", () => {
@@ -219,14 +259,7 @@ const logic = (function () {
       closePopup(popup);
     });
   });
-  function openPopup(popup) {
-    if (popup == null) return;
-    popup.classList.add("active");
-    overlay.classList.add("active");
-  }
-  function closePopup(popup) {
-    if (popup == null) return;
-    popup.classList.remove("active");
-    overlay.classList.remove("active");
-  }
+  gameModeRadioBTN.forEach((button) => {
+    button.addEventListener("click", () => selectedGameMode(button));
+  });
 })();

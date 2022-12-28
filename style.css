@@ -196,7 +196,13 @@ td:active {
 	color: white;
 }
 
-.finishBTN {
+.buttons {
+	display: flex;
+	gap: 1rem;
+}
+
+.finishBTN,
+.popupBTN {
 	width: auto;
 	cursor: pointer;
 }
