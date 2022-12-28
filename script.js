@@ -167,8 +167,9 @@ const logic = (function () {
     colorWinningCells,
   };
 })();
+
 // DOM
-(function () {
+const dom = (function () {
   const cells = document.querySelectorAll("td");
   const nextGameBTN = document.querySelector(".finishBTN");
   const player1 = document.querySelector("#player1");
@@ -178,6 +179,7 @@ const logic = (function () {
   const closePopupBTN = document.querySelectorAll("[data-startgame-button]");
   const overlay = document.getElementById("overlay");
   const gameModeRadioBTN = document.querySelectorAll("input[name='gamemode']");
+  const dumbAIRadioBTN = document.getElementById("randomai");
   const player1SetName = document.getElementById("player1-setname");
   const player2SetName = document.getElementById("player2-setname");
 
@@ -193,12 +195,6 @@ const logic = (function () {
       }
     });
   }
-  // if (player.querySelector(".player-score").textContent === "1") {
-  //   player.querySelector(".point-or-points").textContent = "point";
-  // } else {
-  //   player.querySelector(".point-or-points").textContent = "points";
-  // }
-
   function startNewGame() {
     nextGameBTN.setAttribute("disabled", "");
     gameBoard.unFreeze();
@@ -224,7 +220,7 @@ const logic = (function () {
       playerToReset.resetWins();
     });
   }
-  function selectedGameMode(button) {
+  function selectGameMode(button) {
     if (button.value === "pvp") {
       player2SetName.removeAttribute("disabled");
       player2SetName.value = "Player 2";
@@ -238,21 +234,54 @@ const logic = (function () {
     resetScoreBoard();
     updatePlayersScore();
   }
+  function occupyCell(cell) {
+    const nextSymbol = logic.nextMoveBelongsTo().symbol;
+    if (gameBoard.occupy(cell.id, nextSymbol)) {
+      cell.textContent = nextSymbol;
+    }
+  }
+  function roundChecker() {
+    if (logic.checkForWinner() || logic.checkForTie()) {
+      logic.colorWinningCells();
+      logic.addPointForWinningPlayer();
+      gameBoard.freeze();
+      nextGameBTN.removeAttribute("disabled");
+      updatePlayersScore();
+    }
+  }
+  function dumbAI() {
+    function randomCell(array) {
+      const randomEmptyCell = array
+        .map((element, index) => (element === "" ? index : null))
+        .filter((element) => element !== null);
+      const cellID =
+        randomEmptyCell[Math.floor(Math.random() * randomEmptyCell.length)];
+      return document.getElementById(cellID);
+    }
+    if (dumbAIRadioBTN.checked) {
+      occupyCell(randomCell(gameBoard.print()));
+      roundChecker();
+    }
+  }
+
   // Eventlisteners
   nextGameBTN.addEventListener("click", () => startNewGame());
   cells.forEach((element) => {
     element.addEventListener("click", () => {
-      const nextSymbol = logic.nextMoveBelongsTo().symbol;
-      if (gameBoard.occupy(element.id, nextSymbol)) {
-        element.textContent = nextSymbol;
-      }
-      if (logic.checkForWinner() || logic.checkForTie()) {
-        logic.colorWinningCells();
-        logic.addPointForWinningPlayer();
-        gameBoard.freeze();
-        nextGameBTN.removeAttribute("disabled");
-        updatePlayersScore();
-      }
+      occupyCell(element);
+      roundChecker();
+      // const nextSymbol = logic.nextMoveBelongsTo().symbol;
+      // if (gameBoard.occupy(element.id, nextSymbol)) {
+      //   element.textContent = nextSymbol;
+      // }
+      // if (logic.checkForWinner() || logic.checkForTie()) {
+      //   logic.colorWinningCells();
+      //   logic.addPointForWinningPlayer();
+      //   gameBoard.freeze();
+      //   nextGameBTN.removeAttribute("disabled");
+      //   updatePlayersScore();
+      // }
+      dumbAI();
     });
   });
   openPopupBTN.forEach((button) => {
@@ -268,6 +297,7 @@ const logic = (function () {
     });
   });
   gameModeRadioBTN.forEach((button) => {
-    button.addEventListener("click", () => selectedGameMode(button));
+    button.addEventListener("click", () => selectGameMode(button));
   });
+  openPopupBTN[0].click();
 })();

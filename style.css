@@ -219,6 +219,10 @@ td:active {
 	gap: 0.5rem;
 }
 
+.player-name::after {
+	content: ':';
+}
+
 .popup {
 	position: fixed;
 	top: 50%;
