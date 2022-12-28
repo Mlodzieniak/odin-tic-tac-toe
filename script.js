@@ -173,7 +173,7 @@ const logic = (function () {
   const nextGameBTN = document.querySelector(".finishBTN");
   const player1 = document.querySelector("#player1");
   const player2 = document.querySelector("#player2");
-  const player = document.querySelector(".player");
+  const player = document.querySelectorAll(".player");
   const openPopupBTN = document.querySelectorAll("[data-popup-target]");
   const closePopupBTN = document.querySelectorAll("[data-startgame-button]");
   const overlay = document.getElementById("overlay");
@@ -185,12 +185,20 @@ const logic = (function () {
   function updatePlayersScore() {
     player1.querySelector(".player-score").textContent = players[0].getWins();
     player2.querySelector(".player-score").textContent = players[1].getWins();
-    if (player.querySelector(".player-score").textContent === "1") {
-      player.querySelector(".point-or-points").textContent = "point";
-    } else {
-      player.querySelector(".point-or-points").textContent = "points";
-    }
+    player.forEach((selectedPlayer) => {
+      if (selectedPlayer.querySelector(".player-score").textContent === "1") {
+        selectedPlayer.querySelector(".point-or-points").textContent = "point";
+      } else {
+        selectedPlayer.querySelector(".point-or-points").textContent = "points";
+      }
+    });
   }
+  // if (player.querySelector(".player-score").textContent === "1") {
+  //   player.querySelector(".point-or-points").textContent = "point";
+  // } else {
+  //   player.querySelector(".point-or-points").textContent = "points";
+  // }
+
   function startNewGame() {
     nextGameBTN.setAttribute("disabled", "");
     gameBoard.unFreeze();
