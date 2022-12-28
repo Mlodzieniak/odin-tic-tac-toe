@@ -270,18 +270,9 @@ const dom = (function () {
     element.addEventListener("click", () => {
       occupyCell(element);
       roundChecker();
-      // const nextSymbol = logic.nextMoveBelongsTo().symbol;
-      // if (gameBoard.occupy(element.id, nextSymbol)) {
-      //   element.textContent = nextSymbol;
-      // }
-      // if (logic.checkForWinner() || logic.checkForTie()) {
-      //   logic.colorWinningCells();
-      //   logic.addPointForWinningPlayer();
-      //   gameBoard.freeze();
-      //   nextGameBTN.removeAttribute("disabled");
-      //   updatePlayersScore();
-      // }
-      dumbAI();
+      if (logic.nextMoveBelongsTo().symbol === "o") {
+        dumbAI();
+      }
     });
   });
   openPopupBTN.forEach((button) => {
