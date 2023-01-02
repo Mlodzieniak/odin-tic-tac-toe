@@ -309,15 +309,24 @@ const dom = (function () {
       return initialBoard.print().filter((cell) => typeof cell === "number");
     }
     function minimax(initialBoard) {
-      const currentMark = logic.nextMoveBelongsTo(initialBoard.print()).symbol;
+      // const currentMark = logic.nextMoveBelongsTo(initialBoard.print()).symbol;
+      function currentMark(board12345) {
+        return logic.nextMoveBelongsTo(board12345.print()).symbol;
+      }
       const availCellsIndexes = emptyCellsWithIndexes(initialBoard);
       console.log(initialBoard.print());
-      console.log(currentMark);
+      console.log(currentMark(initialBoard));
       // console.log(availCellsIndexes);
-      if (logic.checkForWinner(initialBoard) && currentMark === "o") {
+      if (
+        logic.checkForWinner(initialBoard) &&
+        currentMark(initialBoard) === "o"
+      ) {
         return { score: -1 };
       }
-      if (logic.checkForWinner(initialBoard) && currentMark === "x") {
+      if (
+        logic.checkForWinner(initialBoard) &&
+        currentMark(initialBoard) === "x"
+      ) {
         return { score: 1 };
       }
       if (availCellsIndexes.length === 0) {
@@ -334,13 +343,13 @@ const dom = (function () {
         // console.log(currentTestPlayInfo);
         // console.log(availCellsIndexes[i]);
         // console.log(initialBoard.print()[availCellsIndexes[i]]);
-        initialBoard.occupy(availCellsIndexes[i], currentMark);
+        initialBoard.occupy(availCellsIndexes[i], currentMark(initialBoard));
         const result = minimax(initialBoard);
         currentTestPlayInfo.score = result.score;
         initialBoard.occupy(availCellsIndexes[i], currentTestPlayInfo.index);
         allTestPlayInfos.push(currentTestPlayInfo);
       }
-      if (currentMark === "o") {
+      if (currentMark(initialBoard) === "o") {
         let bestScore = -1000;
         for (let i = 0; i < allTestPlayInfos.length; i += 1) {
           if (allTestPlayInfos[i].score > bestScore) {
