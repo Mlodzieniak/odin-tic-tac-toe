@@ -302,6 +302,7 @@ const dom = (function () {
     function minimax(initialBoard) {
       const currentMark = logic.nextMoveBelongsTo(initialBoard.print()).symbol;
       const availCellsIndexes = emptyCellsWithIndexes(initialBoard);
+      console.log(initialBoard.print());
       if (logic.checkForWinner(initialBoard) && currentMark === "o") {
         return { score: -1 };
       }
@@ -382,3 +383,4 @@ const dom = (function () {
   openPopupBTN[0].click();
   return { dominator };
 })();
+// I did it!
