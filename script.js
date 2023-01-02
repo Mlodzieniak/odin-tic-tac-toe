@@ -264,7 +264,11 @@ const dom = (function () {
   function occupyCell(cell) {
     const nextSymbol = logic.nextMoveBelongsTo(gameBoard.print()).symbol;
     if (gameBoard.occupy(cell.id, nextSymbol)) {
-      cell.textContent = nextSymbol;
+      if (nextSymbol === "x") {
+        cell.textContent = "\u2715";
+      } else {
+        cell.textContent = "⭘";
+      }
     }
   }
   function roundChecker() {
@@ -302,7 +306,6 @@ const dom = (function () {
     function minimax(initialBoard) {
       const currentMark = logic.nextMoveBelongsTo(initialBoard.print()).symbol;
       const availCellsIndexes = emptyCellsWithIndexes(initialBoard);
-      console.log(initialBoard.print());
       if (logic.checkForWinner(initialBoard) && currentMark === "o") {
         return { score: -1 };
       }
@@ -374,6 +377,7 @@ const dom = (function () {
   closePopupBTN.forEach((button) => {
     button.addEventListener("click", () => {
       const popup = button.closest(".popup");
+      startNewGame();
       closePopup(popup);
     });
   });
@@ -381,6 +385,4 @@ const dom = (function () {
     button.addEventListener("click", () => selectGameMode(button));
   });
   openPopupBTN[0].click();
-  return { dominator };
 })();
-// I did it!

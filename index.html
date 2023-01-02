@@ -17,7 +17,7 @@
 <body>
     <div class="container">
         <div class="title">
-            <h1>Tic Tac Toe</h1>
+            Tic Tac Toe!
         </div>
         <!-- <div class="symbol-selection">
             <button class="symbol" type="button"></button>
@@ -62,12 +62,18 @@
     <div class="popup" id="popup">
         <fieldset>
             <legend>Select game mode:</legend>
-            <label for="gamemode">PvP</label>
-            <input type="radio" name="gamemode" value="pvp" checked>
-            <label for="gamemode">Dumb AI</label>
-            <input type="radio" name="gamemode" value="randomai" id="randomai">
-            <label for="gamemode">Smart AI</label>
-            <input type="radio" name="gamemode" value="dominator" id="dominator">
+            <div>
+                <input type="radio" name="gamemode" value="pvp" checked>
+                <label for="gamemode">PvP</label>
+            </div>
+            <div>
+                <input type="radio" name="gamemode" value="randomai" id="randomai">
+                <label for="gamemode">Dumb AI</label>
+            </div>
+            <div>
+                <input type="radio" name="gamemode" value="dominator" id="dominator">
+                <label for="gamemode">Smart AI</label>
+            </div>
         </fieldset>
         <div class="names">
             <p>Type name(s):</p>
