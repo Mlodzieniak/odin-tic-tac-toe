@@ -83,12 +83,11 @@ const logic = (function () {
     boardToCheck.forEach((element) => {
       count[element] = (count[element] || 0) + 1;
     });
-    if (count[""] === 9 || count[""] % 2 === 1) {
+    if (count.x === count.o) {
       return playerWithXsymbol;
     }
     return playerWithOsymbol;
   }
-
   function checkForWinner(boardToCheck) {
     // 3 same symbols in a row equals win
     const cell = boardToCheck.readCell;
@@ -169,7 +168,6 @@ const logic = (function () {
   }
   function checkForTie(boardToCheck) {
     if (!boardToCheck.print().includes("") && !checkForWinner(boardToCheck)) {
-      // console.log("tie");
       return true;
     }
   }
@@ -258,7 +256,7 @@ const dom = (function () {
       player2SetName.value = "Dumb AI";
     } else if (button.value === "dominator") {
       player2SetName.setAttribute("disabled", "");
-      player2SetName.value = "Dominator AI";
+      player2SetName.value = "Smart AI";
     }
     resetScoreBoard();
     updatePlayersScore();
@@ -294,62 +292,37 @@ const dom = (function () {
   }
 
   function dominator(board) {
-    // const rootBoard = gameBoardFactory(board.print());
     const rootBoard = gameBoardFactory(
       board.print().map((element, index) => (element === "" ? index : element))
     );
-    console.log(rootBoard.print());
-    // function emptyCellsWithIndexes(initialBoard) {
-    //   return initialBoard
-    //     .print()
-    //     .map((element, index) => (element === "" ? index : element))
-    //     .filter((cell) => typeof cell === "number");
-    // }
+
     function emptyCellsWithIndexes(initialBoard) {
       return initialBoard.print().filter((cell) => typeof cell === "number");
     }
     function minimax(initialBoard) {
-      // const currentMark = logic.nextMoveBelongsTo(initialBoard.print()).symbol;
-      function currentMark(board12345) {
-        return logic.nextMoveBelongsTo(board12345.print()).symbol;
-      }
+      const currentMark = logic.nextMoveBelongsTo(initialBoard.print()).symbol;
       const availCellsIndexes = emptyCellsWithIndexes(initialBoard);
-      console.log(initialBoard.print());
-      console.log(currentMark(initialBoard));
-      // console.log(availCellsIndexes);
-      if (
-        logic.checkForWinner(initialBoard) &&
-        currentMark(initialBoard) === "o"
-      ) {
+      if (logic.checkForWinner(initialBoard) && currentMark === "o") {
         return { score: -1 };
       }
-      if (
-        logic.checkForWinner(initialBoard) &&
-        currentMark(initialBoard) === "x"
-      ) {
+      if (logic.checkForWinner(initialBoard) && currentMark === "x") {
         return { score: 1 };
       }
       if (availCellsIndexes.length === 0) {
         return { score: 0 };
       }
-      // if (logic.checkForTie(initialBoard)) {
-      //   return { score: 0 };
-      // }
       const allTestPlayInfos = [];
       let bestTestPlay = null;
       for (let i = 0; i < availCellsIndexes.length; i += 1) {
         const currentTestPlayInfo = {};
         currentTestPlayInfo.index = initialBoard.print()[availCellsIndexes[i]];
-        // console.log(currentTestPlayInfo);
-        // console.log(availCellsIndexes[i]);
-        // console.log(initialBoard.print()[availCellsIndexes[i]]);
-        initialBoard.occupy(availCellsIndexes[i], currentMark(initialBoard));
+        initialBoard.occupy(availCellsIndexes[i], currentMark);
         const result = minimax(initialBoard);
         currentTestPlayInfo.score = result.score;
         initialBoard.occupy(availCellsIndexes[i], currentTestPlayInfo.index);
         allTestPlayInfos.push(currentTestPlayInfo);
       }
-      if (currentMark(initialBoard) === "o") {
+      if (currentMark === "o") {
         let bestScore = -1000;
         for (let i = 0; i < allTestPlayInfos.length; i += 1) {
           if (allTestPlayInfos[i].score > bestScore) {
@@ -366,23 +339,14 @@ const dom = (function () {
           }
         }
       }
-      // console.log(allTestPlayInfos);
       return allTestPlayInfos[bestTestPlay];
     }
     const bestPlayInfo = minimax(rootBoard);
-    // console.log(bestPlayInfo);
     return bestPlayInfo.index;
   }
-  // gameBoard.occupy(0, "x");
-  // gameBoard.occupy(2, "o");
-  // gameBoard.occupy(3, "x");
-  // gameBoard.occupy(6, "o");
-  // gameBoard.occupy(5, "x");
-  // gameBoard.occupy(7, "o");
-  // dominator(gameBoard);
+
   function smartAI() {
     if (dominatorRadioBTN.checked) {
-      // occupyCell(dominator(gameBoard));
       occupyCell(document.getElementById(dominator(gameBoard)));
       roundChecker();
     }
