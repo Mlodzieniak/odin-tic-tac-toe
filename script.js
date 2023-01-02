@@ -294,42 +294,49 @@ const dom = (function () {
   }
 
   function dominator(board) {
-    const rootBoard = gameBoardFactory(board.print());
-    // for any empty cell store cell's index inside it
+    // const rootBoard = gameBoardFactory(board.print());
+    const rootBoard = gameBoardFactory(
+      board.print().map((element, index) => (element === "" ? index : element))
+    );
+    console.log(rootBoard.print());
+    // function emptyCellsWithIndexes(initialBoard) {
+    //   return initialBoard
+    //     .print()
+    //     .map((element, index) => (element === "" ? index : element))
+    //     .filter((cell) => typeof cell === "number");
+    // }
     function emptyCellsWithIndexes(initialBoard) {
-      return initialBoard
-        .print()
-        .map((element, index) => (element === "" ? index : element))
-        .filter((cell) => typeof cell === "number");
+      return initialBoard.print().filter((cell) => typeof cell === "number");
     }
-
     function minimax(initialBoard) {
       const currentMark = logic.nextMoveBelongsTo(initialBoard.print()).symbol;
       const availCellsIndexes = emptyCellsWithIndexes(initialBoard);
+      console.log(initialBoard.print());
+      console.log(currentMark);
+      // console.log(availCellsIndexes);
       if (logic.checkForWinner(initialBoard) && currentMark === "o") {
         return { score: -1 };
       }
       if (logic.checkForWinner(initialBoard) && currentMark === "x") {
         return { score: 1 };
       }
-      if (logic.checkForTie(initialBoard)) {
+      if (availCellsIndexes.length === 0) {
         return { score: 0 };
       }
+      // if (logic.checkForTie(initialBoard)) {
+      //   return { score: 0 };
+      // }
       const allTestPlayInfos = [];
       let bestTestPlay = null;
       for (let i = 0; i < availCellsIndexes.length; i += 1) {
         const currentTestPlayInfo = {};
-        // zapisujemy obceny stan przed symulacja
-        // currentTestPlayInfo.index = initialBoard.print()[availCellsIndexes[i]];
-        currentTestPlayInfo.index = availCellsIndexes[i];
-        // initialBoard[availCellsIndexes[i]] = currentMark;
-        // podstawiamy symbol
+        currentTestPlayInfo.index = initialBoard.print()[availCellsIndexes[i]];
+        // console.log(currentTestPlayInfo);
+        // console.log(availCellsIndexes[i]);
+        // console.log(initialBoard.print()[availCellsIndexes[i]]);
         initialBoard.occupy(availCellsIndexes[i], currentMark);
-        // przywołujemy rekursywnie minimax
         const result = minimax(initialBoard);
-        // zapisujemy wynik z symulowanego ruchu w obiekcie
         currentTestPlayInfo.score = result.score;
-        // przywaracamy board sprzed symulacji
         initialBoard.occupy(availCellsIndexes[i], currentTestPlayInfo.index);
         allTestPlayInfos.push(currentTestPlayInfo);
       }
@@ -350,10 +357,11 @@ const dom = (function () {
           }
         }
       }
+      // console.log(allTestPlayInfos);
       return allTestPlayInfos[bestTestPlay];
     }
     const bestPlayInfo = minimax(rootBoard);
-    console.log(bestPlayInfo);
+    // console.log(bestPlayInfo);
     return bestPlayInfo.index;
   }
   // gameBoard.occupy(0, "x");
@@ -362,11 +370,9 @@ const dom = (function () {
   // gameBoard.occupy(6, "o");
   // gameBoard.occupy(5, "x");
   // gameBoard.occupy(7, "o");
-  dominator(gameBoard);
+  // dominator(gameBoard);
   function smartAI() {
     if (dominatorRadioBTN.checked) {
-      console.log("smartAI Cell to occupy:");
-      console.log(dominator(gameBoard));
       // occupyCell(dominator(gameBoard));
       occupyCell(document.getElementById(dominator(gameBoard)));
       roundChecker();
@@ -403,12 +409,3 @@ const dom = (function () {
   openPopupBTN[0].click();
   return { dominator };
 })();
-
-/*
-We need to provide current state of board to dominator function.
-This function return best possible move i.e. index of empty cell that 
-is supposed to be occupied by computer. 
-
-^HOW TO DO IT?^
-
-*/
